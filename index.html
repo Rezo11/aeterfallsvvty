@@ -1421,6 +1421,7 @@ async function joinRoom(){
 
   subscribeToRoom();
   subscribePresence();
+  startPolling(); // poll every 2s as guaranteed fallback
 
   if(mp.myRole === 'dm'){
     const shareUrl = location.origin + location.pathname + '?room=' + encodeURIComponent(room);
@@ -1440,8 +1441,8 @@ async function pullFullState(){
   if(!mp.client) return;
   const {data} = await mp.client.from(TABLE).select('state_json,updated_at').eq('room_id', mp.room).single();
   if(!data) return;
-  mp.lastUpdatedAt = data.updated_at;
-  try{ applyRemoteFullState(JSON.parse(data.state_json)); }catch(e){}
+  mp.lastUpdatedAt = new Date(data.updated_at).getTime();
+  try{ applyRemoteFullState(JSON.parse(data.state_json)); }catch(e){ console.warn('pullFullState parse error',e); }
 }
 
 function applyRemoteFullState(remote){
@@ -1498,24 +1499,27 @@ function subscribeToRoom(){
       try{ applyRemoteFullState(JSON.parse(payload.new.state_json)); }catch(e){}
     })
     .subscribe(s=>{
-      if(s==='SUBSCRIBED'){
-        setMpStatus('connected');
-        // Also start a lightweight poll every 3s as a safety net
-        // in case realtime misses an event
-        if(mp.myRole !== 'dm'){
-          clearInterval(_pollInterval);
-          _pollInterval = setInterval(async ()=>{
-            const {data} = await mp.client.from(TABLE).select('updated_at').eq('room_id',mp.room).single();
-            if(data && data.updated_at !== mp.lastUpdatedAt){
-              mp.lastUpdatedAt = data.updated_at;
-              await pullFullState();
-            }
-          }, 3000);
-        }
-      } else if(s==='CHANNEL_ERROR'){
-        setMpStatus('error');
-      }
+      if(s==='SUBSCRIBED') setMpStatus('connected');
+      else if(s==='CHANNEL_ERROR') setMpStatus('error');
     });
+}
+
+function startPolling(){
+  if(mp.myRole === 'dm') return;
+  clearInterval(_pollInterval);
+  _pollInterval = setInterval(async ()=>{
+    try{
+      const {data} = await mp.client.from(TABLE).select('updated_at').eq('room_id',mp.room).single();
+      if(!data) return;
+      const ts = new Date(data.updated_at).getTime();
+      if(!mp.lastUpdatedAt){ mp.lastUpdatedAt = ts; return; }
+      if(ts > mp.lastUpdatedAt){
+        mp.lastUpdatedAt = ts;
+        await pullFullState();
+        showToast('🔄 Map updated');
+      }
+    }catch(e){ console.warn('poll error',e); }
+  }, 2000);
 }
 
 function subscribePresence(){
