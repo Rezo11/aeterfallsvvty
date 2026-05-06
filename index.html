@@ -1438,32 +1438,84 @@ async function pushFullState(){
 
 async function pullFullState(){
   if(!mp.client) return;
-  const {data} = await mp.client.from(TABLE).select('state_json').eq('room_id', mp.room).single();
+  const {data} = await mp.client.from(TABLE).select('state_json,updated_at').eq('room_id', mp.room).single();
   if(!data) return;
+  mp.lastUpdatedAt = data.updated_at;
   try{ applyRemoteFullState(JSON.parse(data.state_json)); }catch(e){}
 }
 
 function applyRemoteFullState(remote){
   if(remote.maps) state.maps = remote.maps;
-  if(remote.activeMapId !== undefined) state.activeMapId = remote.activeMapId;
-  if(remote.tokens) state.tokens = remote.tokens;
   if(remote.diceLog) state.diceLog = remote.diceLog;
   if(remote.grid) state.grid = remote.grid;
-  if(state.activeMapId) loadMap(state.activeMapId);
-  renderMapList(); renderTokenList(); renderDiceLog(); applyTransform();
+  if(remote.tokens) state.tokens = remote.tokens;
+
+  const needsMapLoad = remote.activeMapId && remote.activeMapId !== state.activeMapId;
+  if(remote.activeMapId !== undefined) state.activeMapId = remote.activeMapId;
+
+  if(needsMapLoad && state.activeMapId){
+    // Wait for map image to fully load, THEN render tokens on top
+    const m = state.maps.find(x=>x.id===state.activeMapId);
+    if(m){
+      const img = document.getElementById('map-img');
+      img.onload = ()=>{
+        m.naturalWidth = img.naturalWidth;
+        m.naturalHeight = img.naturalHeight;
+        drawGrid();
+        renderTokens();
+        renderTokenList();
+      };
+      img.src = m.dataUrl;
+      renderMapList();
+    }
+  } else {
+    // Map already loaded — just refresh tokens
+    renderTokens();
+    renderTokenList();
+  }
+
+  renderDiceLog();
+  applyTransform();
+  renderMapList();
+
   const ids = ['grid-show','grid-snap','grid-size','grid-feet'];
   const vals = [state.grid.show, state.grid.snap, state.grid.size, state.grid.feetPerSquare];
   ids.forEach((id,i)=>{ const el=document.getElementById(id); if(el) el[typeof vals[i]==='boolean'?'checked':'value']=vals[i]; });
 }
 
 let _subThrottle = null;
+let _pollInterval = null;
+
 function subscribeToRoom(){
+  // Primary: Supabase Realtime (postgres_changes)
   mp.channel = mp.client.channel('db-'+mp.room)
     .on('postgres_changes',{event:'UPDATE',schema:'public',table:TABLE,filter:'room_id=eq.'+mp.room}, payload=>{
       if(mp.myRole==='dm') return;
+      try{ applyRemoteFullState(JSON.parse(payload.new.state_json)); }catch(e){ console.warn('realtime parse error',e); }
+    })
+    .on('postgres_changes',{event:'INSERT',schema:'public',table:TABLE,filter:'room_id=eq.'+mp.room}, payload=>{
+      if(mp.myRole==='dm') return;
       try{ applyRemoteFullState(JSON.parse(payload.new.state_json)); }catch(e){}
     })
-    .subscribe(s=>{ if(s==='SUBSCRIBED') setMpStatus('connected'); else if(s==='CHANNEL_ERROR') setMpStatus('error'); });
+    .subscribe(s=>{
+      if(s==='SUBSCRIBED'){
+        setMpStatus('connected');
+        // Also start a lightweight poll every 3s as a safety net
+        // in case realtime misses an event
+        if(mp.myRole !== 'dm'){
+          clearInterval(_pollInterval);
+          _pollInterval = setInterval(async ()=>{
+            const {data} = await mp.client.from(TABLE).select('updated_at').eq('room_id',mp.room).single();
+            if(data && data.updated_at !== mp.lastUpdatedAt){
+              mp.lastUpdatedAt = data.updated_at;
+              await pullFullState();
+            }
+          }, 3000);
+        }
+      } else if(s==='CHANNEL_ERROR'){
+        setMpStatus('error');
+      }
+    });
 }
 
 function subscribePresence(){
