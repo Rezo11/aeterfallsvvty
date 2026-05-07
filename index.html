@@ -47,7 +47,7 @@ body.mode-tabletop #app-forge{display:none}
 /* ════════════════════════════════════════════════════════════════════════
    MODE-SWITCHER NAV — sits above everything
    ════════════════════════════════════════════════════════════════════════ */
-#mode-nav{display:flex;justify-content:center;gap:0;padding:6px;background:linear-gradient(180deg,#000 0%,var(--bg-deepest) 100%);border-bottom:1px solid var(--border-gold);flex-shrink:0;position:relative;z-index:100}
+#mode-nav{display:flex;justify-content:center;gap:0;padding:6px;background:linear-gradient(180deg,#000 0%,var(--bg-deepest) 100%);border-bottom:1px solid var(--border-gold);flex-shrink:0;position:relative;z-index:5000}
 body.mode-forge #mode-nav{position:sticky;top:0}
 .mode-btn{padding:8px 22px;background:transparent;border:1px solid var(--border-gold);color:var(--text-dim);font-family:'Cinzel',serif;font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;cursor:pointer;transition:all .2s;border-radius:3px;margin:0 4px}
 .mode-btn:hover{color:var(--gold);border-color:var(--gold)}
@@ -6274,7 +6274,18 @@ async function pushFullState(){
     senderId: mp.myId,
     senderName: mp.myName
   };
-  await mp.client.from(TABLE).upsert({ room_id: mp.room, state_json: JSON.stringify(s), updated_at: new Date().toISOString() }, {onConflict:'room_id'});
+  try{
+    const {error} = await mp.client.from(TABLE).upsert({ room_id: mp.room, state_json: JSON.stringify(s), updated_at: new Date().toISOString() }, {onConflict:'room_id'});
+    if(error){
+      console.error('[Aetherfall MP] pushFullState failed:', error);
+      showToast('⚠ Sync failed: ' + (error.message || 'unknown error'));
+      return;
+    }
+    if(window.AETHERFALL_DEBUG) console.log('[Aetherfall MP] PUSH ok', {tokens:s.tokens.length, rolls:s.diceLog.length, by:s.senderName});
+  }catch(e){
+    console.error('[Aetherfall MP] pushFullState threw:', e);
+    showToast('⚠ Sync error: ' + e.message);
+  }
 }
 
 async function pullFullState(){
