@@ -45,13 +45,14 @@ body.mode-forge #app-tabletop{display:none}
 body.mode-tabletop #app-forge{display:none}
 
 /* ════════════════════════════════════════════════════════════════════════
-   MODE-SWITCHER NAV — sits above everything
+   MODE-SWITCHER NAV — sits above everything (including modals so the user
+   can always escape back to the Forge)
    ════════════════════════════════════════════════════════════════════════ */
-#mode-nav{display:flex;justify-content:center;gap:0;padding:6px;background:linear-gradient(180deg,#000 0%,var(--bg-deepest) 100%);border-bottom:1px solid var(--border-gold);flex-shrink:0;position:relative;z-index:5000}
+#mode-nav{display:flex;justify-content:center;gap:0;padding:8px;background:linear-gradient(180deg,#000 0%,var(--bg-deepest) 100%);border-bottom:1px solid var(--border-gold);flex-shrink:0;position:relative;z-index:2000}
 body.mode-forge #mode-nav{position:sticky;top:0}
-.mode-btn{padding:8px 22px;background:transparent;border:1px solid var(--border-gold);color:var(--text-dim);font-family:'Cinzel',serif;font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;cursor:pointer;transition:all .2s;border-radius:3px;margin:0 4px}
+.mode-btn{padding:9px 26px;background:transparent;border:1px solid var(--border-gold);color:var(--text-dim);font-family:'Cinzel',serif;font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;cursor:pointer;transition:all .2s;border-radius:3px;margin:0 4px}
 .mode-btn:hover{color:var(--gold);border-color:var(--gold)}
-.mode-btn.active{background:linear-gradient(180deg,rgba(201,168,76,.18) 0%,rgba(201,168,76,.05) 100%);color:var(--gold);border-color:var(--gold);box-shadow:0 0 18px rgba(201,168,76,.25)}
+.mode-btn.active{background:linear-gradient(180deg,rgba(201,168,76,.22) 0%,rgba(201,168,76,.06) 100%);color:var(--gold);border-color:var(--gold);box-shadow:0 0 18px rgba(201,168,76,.3)}
 
 /* ════════════════════════════════════════════════════════════════════════
    FORGE-INTEGRATION ADDITIONS (in VTT tokens tab)
@@ -66,6 +67,38 @@ body.mode-forge #mode-nav{position:sticky;top:0}
 .forge-char-row .fc-summon{flex-shrink:0;padding:3px 8px;background:rgba(82,183,136,.15);border:1px solid rgba(82,183,136,.4);color:var(--green-bright);font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.08em;border-radius:3px;cursor:pointer;text-transform:uppercase}
 .forge-char-row .fc-summon:hover{background:rgba(82,183,136,.3);color:#fff}
 .forge-empty-msg{font-size:.75rem;color:var(--text-dim);font-style:italic;text-align:center;padding:10px;background:var(--bg-dark);border:1px dashed var(--border-gold);border-radius:4px}
+
+/* ════════════════════════════════════════════════════════════════════════
+   PLAY-OFFLINE BUTTON — escape hatch from the multiplayer modal
+   ════════════════════════════════════════════════════════════════════════ */
+.mp-skip-btn{width:100%;padding:9px;background:transparent;border:1px solid rgba(122,112,96,.5);color:var(--text-dim);font-family:'Cinzel',serif;font-size:.72rem;letter-spacing:.12em;cursor:pointer;border-radius:5px;text-transform:uppercase;transition:all .2s;margin-top:8px}
+.mp-skip-btn:hover{border-color:var(--text-mid);color:var(--text-mid);background:rgba(122,112,96,.08)}
+
+/* ════════════════════════════════════════════════════════════════════════
+   SUMMON MODAL — character placement with required portrait image
+   ════════════════════════════════════════════════════════════════════════ */
+.summon-modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.92);backdrop-filter:blur(6px);z-index:1500;display:flex;align-items:center;justify-content:center;padding:20px}
+.summon-modal{background:linear-gradient(180deg,var(--bg-card) 0%,var(--bg-dark) 100%);border:1px solid var(--gold);border-radius:6px;padding:28px 32px 20px;max-width:420px;width:100%;box-shadow:0 0 60px rgba(201,168,76,.25),0 0 0 1px rgba(201,168,76,.15);position:relative}
+.summon-close{position:absolute;top:10px;right:14px;font-size:1.6rem;color:var(--text-dim);cursor:pointer;width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:all .15s;line-height:1}
+.summon-close:hover{color:var(--gold);background:rgba(201,168,76,.1)}
+.summon-modal h2{font-family:'Cinzel Decorative',serif;color:var(--gold);font-size:1.4rem;text-align:center;margin-bottom:6px;font-weight:700}
+.summon-sub{text-align:center;color:var(--text-mid);font-size:.78rem;font-style:italic;margin-bottom:20px}
+.summon-img-wrap{display:flex;flex-direction:column;align-items:center;margin-bottom:8px;padding:10px 0 24px;position:relative}
+.summon-img-preview{width:140px;height:140px;border-radius:50%;background-size:cover;background-position:center;background-color:var(--bg-deepest);border:3px solid var(--gold);box-shadow:0 0 20px rgba(201,168,76,.3),inset 0 0 12px rgba(0,0,0,.5);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;overflow:hidden}
+.summon-img-preview:hover{transform:scale(1.04);box-shadow:0 0 30px rgba(201,168,76,.5),inset 0 0 12px rgba(0,0,0,.5)}
+.summon-img-preview.has-image{border-color:var(--green-bright)}
+.summon-placeholder{color:var(--text-dim);font-size:.75rem;text-align:center;line-height:1.5;font-family:'Cinzel',serif;letter-spacing:.05em}
+.summon-name-tag{margin-top:14px;background:rgba(0,0,0,.85);border:1px solid var(--gold);color:var(--gold-light);padding:4px 14px;font-family:'Cinzel',serif;font-size:.85rem;letter-spacing:.08em;border-radius:3px;font-weight:600;text-shadow:none;max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.summon-meta{text-align:center;color:var(--text-mid);font-size:.75rem;font-style:italic;margin-bottom:16px;padding:8px;background:rgba(0,0,0,.3);border-radius:4px}
+.summon-actions{display:flex;gap:8px;margin-bottom:10px}
+.summon-btn-secondary{flex:1;padding:10px;background:transparent;border:1px solid var(--border-gold);color:var(--text-mid);font-family:'Cinzel',serif;font-size:.72rem;letter-spacing:.1em;cursor:pointer;border-radius:4px;text-transform:uppercase;transition:all .2s}
+.summon-btn-secondary:hover{border-color:var(--gold);color:var(--gold);background:rgba(201,168,76,.08)}
+.summon-btn-primary{flex:1.4;padding:10px;background:linear-gradient(135deg,rgba(82,183,136,.3),rgba(82,183,136,.1));border:1px solid var(--green-bright);color:var(--green-bright);font-family:'Cinzel',serif;font-size:.78rem;letter-spacing:.12em;cursor:pointer;border-radius:4px;text-transform:uppercase;transition:all .2s;font-weight:600}
+.summon-btn-primary:hover:not(:disabled){background:rgba(82,183,136,.4);box-shadow:0 0 18px rgba(82,183,136,.4)}
+.summon-btn-primary:disabled{opacity:.4;cursor:not-allowed;border-color:var(--text-dim);color:var(--text-dim);background:transparent}
+.summon-skip{text-align:center;font-size:.7rem;color:var(--text-dim)}
+.summon-skip a{color:var(--text-dim);text-decoration:underline;font-style:italic}
+.summon-skip a:hover{color:var(--text-mid)}
 
 /* ════════════════════════════════════════════════════════════════════════
    ━━━━ FORGE STYLES (from character-builder) ━━━━
@@ -1071,6 +1104,7 @@ header::after{content:'';position:absolute;bottom:-1px;left:50%;transform:transl
     <input class="mp-input" id="mp-room" placeholder="e.g. lost-mines-2024" maxlength="40">
     <div style="font-size:.68rem;color:var(--text-dim);font-style:italic;margin-bottom:16px">Everyone with the same Room ID joins your session. A shareable link is generated automatically.</div>
     <button class="mp-join-btn" id="mp-join-btn" onclick="joinRoom()">⚔ Enter the Session</button>
+    <button class="mp-skip-btn" onclick="skipMultiplayer()">⌂ Play Offline / Single-Player</button>
     <div style="text-align:center;margin-top:10px;font-size:.68rem;color:#ff8a65" id="mp-error"></div>
   </div>
 </div>
@@ -1273,6 +1307,37 @@ header::after{content:'';position:absolute;bottom:-1px;left:50%;transform:transl
     <button class="help-close" onclick="hideHelp()">Got It</button>
   </div>
 </div>
+
+<!-- ═════════════════════════════════════════════════════════════════════
+     SUMMON MODAL — appears when placing a Forge character on the map.
+     Requires the player to upload a portrait image. The image is saved
+     back to the character so it persists across sessions.
+     ═════════════════════════════════════════════════════════════════════ -->
+<div class="summon-modal-bg" id="summon-modal" style="display:none">
+  <div class="summon-modal">
+    <div class="summon-close" onclick="cancelSummon()">×</div>
+    <h2 id="summon-title">⚔ Summon Hero</h2>
+    <div class="summon-sub" id="summon-sub">Place a portrait to bring this character onto the map.</div>
+
+    <div class="summon-img-wrap">
+      <div class="summon-img-preview" id="summon-img-preview" onclick="document.getElementById('summon-img-input').click()">
+        <span class="summon-placeholder">📷<br>Click to choose<br>a portrait image</span>
+      </div>
+      <div class="summon-name-tag" id="summon-name-tag">Hero</div>
+    </div>
+
+    <input type="file" id="summon-img-input" accept="image/*" style="display:none">
+
+    <div class="summon-meta" id="summon-meta"></div>
+
+    <div class="summon-actions">
+      <button class="summon-btn-secondary" onclick="document.getElementById('summon-img-input').click()">📁 Choose Image</button>
+      <button class="summon-btn-primary" id="summon-confirm-btn" onclick="confirmSummon()" disabled>⚔ Place on Map</button>
+    </div>
+    <div class="summon-skip"><a href="#" onclick="event.preventDefault();confirmSummon(true)">Skip image — use initials instead</a></div>
+  </div>
+</div>
+
 </div>
 
 <!-- ═════════════════════════════════════════════════════════════════════
@@ -6120,6 +6185,68 @@ function summonCharacterAsToken(charId){
     else alert('Load a map in the Tabletop tab first.');
     return;
   }
+  // Stage the character and open the summon modal so the player can attach
+  // a portrait before placing the token. Image is REQUIRED unless they
+  // explicitly choose "Skip image".
+  _summonStage = { charId, char: c };
+  _summonImg = c.tokenImage || null; // re-use saved portrait if any
+  const name = (c.charName||'Hero');
+  const lvl = c.level || 1;
+  const raceLabel = c.selectedRaceId ? c.selectedRaceId.replace(/[-_]/g,' ') : '';
+  const hp = c.hpCurrent ?? c.hpMax ?? '?';
+  const hpMax = c.hpMax ?? '?';
+  document.getElementById('summon-title').textContent = '⚔ Summon ' + name;
+  document.getElementById('summon-name-tag').textContent = name;
+  document.getElementById('summon-meta').textContent = `Level ${lvl}${raceLabel?' '+raceLabel:''} · HP ${hp}/${hpMax}`;
+  _renderSummonPreview();
+  document.getElementById('summon-modal').style.display = 'flex';
+}
+
+let _summonStage = null;
+let _summonImg = null;
+
+function _renderSummonPreview(){
+  const preview = document.getElementById('summon-img-preview');
+  const confirmBtn = document.getElementById('summon-confirm-btn');
+  if(_summonImg){
+    preview.style.backgroundImage = `url('${_summonImg}')`;
+    preview.classList.add('has-image');
+    preview.innerHTML = '';
+    confirmBtn.disabled = false;
+  } else {
+    preview.style.backgroundImage = '';
+    preview.classList.remove('has-image');
+    preview.innerHTML = '<span class="summon-placeholder">📷<br>Click to choose<br>a portrait image</span>';
+    confirmBtn.disabled = true;
+  }
+}
+
+function cancelSummon(){
+  document.getElementById('summon-modal').style.display = 'none';
+  _summonStage = null;
+  _summonImg = null;
+  const inp = document.getElementById('summon-img-input');
+  if(inp) inp.value = '';
+}
+
+function confirmSummon(skipImage){
+  if(!_summonStage) return;
+  const { charId, char: c } = _summonStage;
+  const finalImage = skipImage ? null : _summonImg;
+
+  // Persist the chosen portrait back to the character so subsequent summons
+  // remember it without forcing another upload.
+  if(finalImage){
+    try {
+      const chars = getForgeCharacters();
+      if(chars[charId]){
+        chars[charId].tokenImage = finalImage;
+        localStorage.setItem('aetherfall_characters', JSON.stringify(chars));
+      }
+    } catch(e){ console.warn('Could not persist token image', e); }
+  }
+
+  // Place the token on the active map at the center of the current view.
   const raceId = (c.selectedRaceId||'').toLowerCase();
   const color = RACE_TOKEN_COLOR[raceId] || 'blue';
   const wrap = document.getElementById('canvas-wrap');
@@ -6131,18 +6258,45 @@ function summonCharacterAsToken(charId){
     mapId: state.activeMapId,
     name: (c.charName||'Hero').slice(0,24),
     color,
-    image: null,
+    image: finalImage,
     x: Math.round(wx-30),
     y: Math.round(wy-30),
     hp: c.hpCurrent ?? c.hpMax ?? 20,
     hpMax: c.hpMax ?? 20,
-    forgeCharId: charId  // back-link for future syncing
+    forgeCharId: charId
   };
   state.tokens.push(tk);
   if(typeof saveState==='function') saveState();
   if(typeof renderTokens==='function') renderTokens();
   if(typeof renderTokenList==='function') renderTokenList();
   if(typeof showToast==='function') showToast('⚔ Summoned: '+tk.name);
+
+  cancelSummon();
+}
+
+/* File-picker handler for the summon portrait */
+(function(){
+  document.addEventListener('DOMContentLoaded', () => {
+    const inp = document.getElementById('summon-img-input');
+    if(!inp) return;
+    inp.addEventListener('change', e => {
+      const file = e.target.files[0];
+      if(!file) return;
+      const reader = new FileReader();
+      reader.onload = ev => {
+        _summonImg = ev.target.result;
+        _renderSummonPreview();
+      };
+      reader.readAsDataURL(file);
+    });
+  });
+})();
+
+/* Escape hatch — let the user dismiss the multiplayer modal without joining
+   a room, so they can return to the Forge or use the VTT solo. */
+function skipMultiplayer(){
+  document.getElementById('mp-modal').style.display = 'none';
+  if(typeof setMpStatus === 'function') setMpStatus('offline');
 }
 
 /* Wire up: re-render the Forge character list whenever the Tokens tab is
@@ -6265,7 +6419,7 @@ async function joinRoom(){
 
 async function pushFullState(){
   if(!mp.client || !mp.room) return;
-  const s = {
+  const payload = {
     maps: state.maps,
     activeMapId: state.activeMapId,
     tokens: state.tokens,
@@ -6274,17 +6428,20 @@ async function pushFullState(){
     senderId: mp.myId,
     senderName: mp.myName
   };
-  try{
-    const {error} = await mp.client.from(TABLE).upsert({ room_id: mp.room, state_json: JSON.stringify(s), updated_at: new Date().toISOString() }, {onConflict:'room_id'});
-    if(error){
-      console.error('[Aetherfall MP] pushFullState failed:', error);
-      showToast('⚠ Sync failed: ' + (error.message || 'unknown error'));
-      return;
-    }
-    if(window.AETHERFALL_DEBUG) console.log('[Aetherfall MP] PUSH ok', {tokens:s.tokens.length, rolls:s.diceLog.length, by:s.senderName});
-  }catch(e){
-    console.error('[Aetherfall MP] pushFullState threw:', e);
-    showToast('⚠ Sync error: ' + e.message);
+  // Persist (so late-joiners get the current state via pullFullState)
+  try {
+    await mp.client.from(TABLE).upsert({
+      room_id: mp.room,
+      state_json: JSON.stringify(payload),
+      updated_at: new Date().toISOString()
+    }, {onConflict:'room_id'});
+  } catch(e){ console.warn('[Aetherfall] DB upsert failed', e); }
+
+  // Broadcast immediately (peer-to-peer, works without replication enabled)
+  if(mp.broadcastChannel){
+    try {
+      await mp.broadcastChannel.send({ type: 'broadcast', event: 'state', payload });
+    } catch(e){ console.warn('[Aetherfall] Broadcast send failed', e); }
   }
 }
 
@@ -6357,13 +6514,25 @@ let _subThrottle = null;
 let _pollInterval = null;
 
 function subscribeToRoom(){
-  // Primary: Supabase Realtime (postgres_changes) — bidirectional now.
-  // Self-echo is filtered by senderId so we don't apply our own writes.
+  // ───────────────────────────────────────────────────────────────────
+  // Bidirectional sync — three redundant paths so updates always arrive:
+  //
+  //   1. POSTGRES_CHANGES — only fires if you enabled Realtime replication
+  //      on the vtt_rooms table (Database → Replication in Supabase).
+  //   2. BROADCAST channel — peer-to-peer Realtime messages, works WITHOUT
+  //      replication. This is the reliability backstop.
+  //   3. POLLING (every 2s) — final fallback if Realtime is unreachable.
+  //
+  // All three feed into applyRemoteFullState(), which uses senderId guards
+  // and id-based merges so duplicate deliveries are harmless no-ops.
+  // ───────────────────────────────────────────────────────────────────
+
+  // PATH 1: Postgres CDC
   mp.channel = mp.client.channel('db-'+mp.room)
     .on('postgres_changes',{event:'UPDATE',schema:'public',table:TABLE,filter:'room_id=eq.'+mp.room}, payload=>{
       try{
         const remote = JSON.parse(payload.new.state_json);
-        if(remote.senderId && remote.senderId === mp.myId) return; // skip our own write
+        if(remote.senderId && remote.senderId === mp.myId) return;
         applyRemoteFullState(remote);
       }catch(e){ console.warn('realtime parse error',e); }
     })
@@ -6377,6 +6546,18 @@ function subscribeToRoom(){
     .subscribe(s=>{
       if(s==='SUBSCRIBED') setMpStatus('connected');
       else if(s==='CHANNEL_ERROR') setMpStatus('error');
+    });
+
+  // PATH 2: Broadcast (works without replication)
+  mp.broadcastChannel = mp.client.channel('bcast-'+mp.room, { config: { broadcast: { self: false } } })
+    .on('broadcast', { event: 'state' }, ({ payload }) => {
+      try {
+        if(payload && payload.senderId && payload.senderId === mp.myId) return;
+        applyRemoteFullState(payload);
+      } catch(e){ console.warn('broadcast apply error', e); }
+    })
+    .subscribe(s => {
+      if(s === 'SUBSCRIBED') console.log('[Aetherfall] Broadcast channel ready');
     });
 }
 
