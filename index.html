@@ -730,6 +730,11 @@ header::after{content:'';position:absolute;bottom:-1px;left:50%;transform:transl
 .token-color-pink{border-color:#ff79b0}
 .token-color-cyan{border-color:#1abc9c}
 .token-name-tag{position:absolute;bottom:-22px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.85);border:1px solid var(--gold);color:var(--gold-light);padding:1px 8px;font-family:'Cinzel',serif;font-size:.62rem;letter-spacing:.05em;border-radius:3px;white-space:nowrap;pointer-events:none;text-shadow:none}
+
+/* Roll20-style drag distance overlay */
+.drag-line{stroke:var(--gold);stroke-width:2;stroke-dasharray:8,5;opacity:.9;filter:drop-shadow(0 0 4px rgba(0,0,0,.8))}
+.drag-origin-dot{fill:none;stroke:var(--gold);stroke-width:2;opacity:.7}
+.drag-distance-label{position:absolute;transform:translate(-50%,-100%);background:linear-gradient(180deg,rgba(0,0,0,.95) 0%,rgba(20,16,30,.95) 100%);border:1px solid var(--gold);color:var(--gold-light);padding:4px 10px;font-family:'Cinzel',serif;font-size:.78rem;letter-spacing:.06em;border-radius:4px;white-space:nowrap;pointer-events:none;font-weight:600;box-shadow:0 0 12px rgba(0,0,0,.7),0 0 0 1px rgba(201,168,76,.3);text-shadow:0 1px 2px rgba(0,0,0,.8);z-index:200}
 .token-hp-bar{position:absolute;top:-10px;left:0;right:0;height:5px;background:rgba(0,0,0,.7);border:1px solid var(--gold-dim);border-radius:2px;overflow:hidden;pointer-events:none}
 .token-hp-fill{height:100%;background:linear-gradient(90deg,#c0392b,#e74c3c);transition:width .3s}
 
@@ -5460,6 +5465,8 @@ let isPanning = false;
 let panStart = null;
 let isDraggingToken = null;
 let tokenDragOffset = null;
+let dragOrigin = null;          // { x, y } — token's pre-drag position
+let dragOverlay = null;         // SVG line + label shown during drag
 
 const wrap = document.getElementById('canvas-wrap');
 
@@ -5630,6 +5637,10 @@ function startTokenDrag(el, e){
   const wx = (e.clientX - rect.left - state.view.x) / state.view.zoom;
   const wy = (e.clientY - rect.top - state.view.y) / state.view.zoom;
   tokenDragOffset = { x: wx-tk.x, y: wy-tk.y };
+  // Record where the drag started, then create the Roll20-style distance overlay
+  dragOrigin = { x: tk.x, y: tk.y };
+  createDragOverlay();
+  updateDragOverlay(tk);
   renderTokenList();
   e.stopPropagation();
 }
@@ -5649,13 +5660,82 @@ function moveDraggedToken(e){
   isDraggingToken.x = Math.round(nx);
   isDraggingToken.y = Math.round(ny);
   renderTokens();
+  updateDragOverlay(isDraggingToken);
 }
 
 function endTokenDrag(){
   document.querySelectorAll('.token').forEach(el=>el.classList.remove('dragging'));
   isDraggingToken = null;
+  dragOrigin = null;
+  destroyDragOverlay();
   saveState();
   renderTokens();
+}
+
+// ─── Roll20-style drag distance overlay ─────────────────────────────────
+// Shown while a token is being dragged: a dashed line from the start
+// position to the current position, plus a "30 ft" label near the token.
+function createDragOverlay(){
+  if(dragOverlay) return;
+  const container = document.getElementById('map-container');
+  if(!container) return;
+  // SVG for the dashed line — placed inside #map-container so it inherits
+  // the same zoom/pan transforms as the tokens themselves.
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('class', 'drag-line-svg');
+  svg.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;overflow:visible;pointer-events:none;z-index:50';
+  const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+  line.setAttribute('class', 'drag-line');
+  line.setAttribute('x1', 0); line.setAttribute('y1', 0);
+  line.setAttribute('x2', 0); line.setAttribute('y2', 0);
+  svg.appendChild(line);
+  // Origin marker — small ring at the drag-start position
+  const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  dot.setAttribute('class', 'drag-origin-dot');
+  dot.setAttribute('r', 6);
+  svg.appendChild(dot);
+  container.appendChild(svg);
+  // Distance label — DOM div so we get nice styled text without SVG <text> hassle
+  const label = document.createElement('div');
+  label.className = 'drag-distance-label';
+  container.appendChild(label);
+  dragOverlay = { svg, line, dot, label };
+}
+
+function updateDragOverlay(tk){
+  if(!dragOverlay || !dragOrigin) return;
+  // Token center coordinates (tokens are 60×60, so center is +30,+30).
+  const cx0 = dragOrigin.x + 30, cy0 = dragOrigin.y + 30;
+  const cx1 = tk.x + 30,         cy1 = tk.y + 30;
+  dragOverlay.line.setAttribute('x1', cx0);
+  dragOverlay.line.setAttribute('y1', cy0);
+  dragOverlay.line.setAttribute('x2', cx1);
+  dragOverlay.line.setAttribute('y2', cy1);
+  dragOverlay.dot.setAttribute('cx', cx0);
+  dragOverlay.dot.setAttribute('cy', cy0);
+  // Distance: pixels → squares → feet using the configured grid scale.
+  const dx = cx1 - cx0, dy = cy1 - cy0;
+  const distPx = Math.sqrt(dx*dx + dy*dy);
+  const sz = state.grid.size || 70;
+  const fps = state.grid.feetPerSquare || 5;
+  const feet = Math.round((distPx / sz) * fps);
+  const squares = (distPx / sz);
+  // Label position — just above the moving token. We offset upward so it
+  // doesn't overlap the HP bar.
+  dragOverlay.label.style.left = (cx1) + 'px';
+  dragOverlay.label.style.top  = (tk.y - 24) + 'px';
+  if(distPx < 4){
+    dragOverlay.label.textContent = '0 ft';
+  } else {
+    dragOverlay.label.textContent = feet + ' ft  ·  ' + squares.toFixed(1) + ' sq';
+  }
+}
+
+function destroyDragOverlay(){
+  if(!dragOverlay) return;
+  try { dragOverlay.svg.remove(); } catch(e){}
+  try { dragOverlay.label.remove(); } catch(e){}
+  dragOverlay = null;
 }
 
 function selectToken(id){
@@ -6300,14 +6380,18 @@ function skipMultiplayer(){
 }
 
 /* Wire up: re-render the Forge character list whenever the Tokens tab is
-   shown, and after the Forge auto-saves a character. */
+   shown, and after the Forge auto-saves a character. Also propagate
+   HP/HP-max changes to any tokens linked to that character (so when a
+   player levels up in the Forge, the token on the map auto-updates). */
 (function(){
-  // Hook into Forge auto-save: every time autoSaveCharacter runs, refresh.
+  // Hook into Forge auto-save: every time autoSaveCharacter runs, refresh
+  // the list AND sync the active character's HP into any linked tokens.
   if(typeof autoSaveCharacter === 'function'){
     const _orig = window.autoSaveCharacter;
     window.autoSaveCharacter = function(){
       const r = _orig.apply(this, arguments);
       try{ renderForgeCharList(); }catch(e){}
+      try{ syncForgeCharacterToTokens(getActiveId()); }catch(e){}
       return r;
     };
   }
@@ -6317,6 +6401,7 @@ function skipMultiplayer(){
     window.saveCharacterNow = function(){
       const r = _orig2.apply(this, arguments);
       try{ renderForgeCharList(); }catch(e){}
+      try{ syncForgeCharacterToTokens(getActiveId()); }catch(e){}
       return r;
     };
   }
@@ -6339,6 +6424,40 @@ function skipMultiplayer(){
     };
   }
 })();
+
+/* ════════════════════════════════════════════════════════════════════════
+   Sync a Forge character's HP into every token on the map that was
+   summoned from it. Called after every autoSave/manual save in the Forge
+   so a level-up (which raises hpMax) or damage taken (which lowers
+   hpCurrent) is reflected on the battle map immediately, and broadcast
+   to all connected players via the existing saveState push.
+   ════════════════════════════════════════════════════════════════════════ */
+function syncForgeCharacterToTokens(charId){
+  if(!charId) return;
+  // VTT may not be initialized yet (user is still in the Forge before the
+  // first switch to Tabletop) — bail gracefully if so.
+  if(typeof state === 'undefined' || !state || !Array.isArray(state.tokens)) return;
+  const chars = getForgeCharacters();
+  const c = chars[charId];
+  if(!c) return;
+  const newMax = c.hpMax || 0;
+  const newHp  = (c.hpCurrent !== undefined && c.hpCurrent !== null) ? c.hpCurrent : newMax;
+  let changed = false;
+  state.tokens.forEach(tk => {
+    if(tk.forgeCharId === charId){
+      if(newMax > 0 && tk.hpMax !== newMax){ tk.hpMax = newMax; changed = true; }
+      if(tk.hp !== newHp){ tk.hp = newHp; changed = true; }
+      // Also update the displayed name in case the user renamed their character
+      const newName = (c.charName||'Hero').slice(0,24);
+      if(tk.name !== newName){ tk.name = newName; changed = true; }
+    }
+  });
+  if(changed){
+    if(typeof saveState === 'function') saveState();
+    if(typeof renderTokens === 'function') renderTokens();
+    if(typeof renderTokenList === 'function') renderTokenList();
+  }
+}
 </script>
 
 <!-- ━━━━ MULTIPLAYER (SUPABASE) ━━━━ -->
