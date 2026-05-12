@@ -101,6 +101,68 @@ body.mode-forge #mode-nav{position:sticky;top:0}
 .summon-skip a:hover{color:var(--text-mid)}
 
 /* ════════════════════════════════════════════════════════════════════════
+   DM-ONLY VISIBILITY — hide DM controls from players
+   ════════════════════════════════════════════════════════════════════════ */
+body.role-player .dm-only,
+body.role-player .dm-only-inline{display:none !important}
+.dm-badge{display:inline-block;background:rgba(192,57,43,.25);border:1px solid var(--crimson-bright);color:#ff8a8a;font-family:'Cinzel',serif;font-size:.55rem;letter-spacing:.12em;padding:1px 6px;border-radius:10px;margin-left:6px;vertical-align:middle;font-weight:600}
+
+/* ════════════════════════════════════════════════════════════════════════
+   FOG OF WAR
+   ════════════════════════════════════════════════════════════════════════ */
+.map-fog{position:absolute;top:0;left:0;pointer-events:none;z-index:5}
+.map-fog.dm-view{opacity:.55}
+body.fog-painting{cursor:crosshair !important}
+body.tool-fog .map-fog{pointer-events:none}
+.fog-tool-row{display:flex;gap:6px;margin-top:8px}
+.fog-tool-btn{flex:1;padding:7px;background:transparent;border:1px solid var(--border-gold);color:var(--text-mid);font-family:'Cinzel',serif;font-size:.7rem;letter-spacing:.08em;cursor:pointer;border-radius:3px;text-transform:uppercase;transition:all .15s}
+.fog-tool-btn:hover{border-color:var(--gold);color:var(--gold)}
+.fog-tool-btn.active{background:rgba(201,168,76,.18);border-color:var(--gold);color:var(--gold);box-shadow:0 0 10px rgba(201,168,76,.2)}
+.fog-action-row{display:flex;gap:6px;margin-top:8px}
+.fog-action-btn{flex:1;padding:6px;background:rgba(0,0,0,.3);border:1px solid rgba(122,112,96,.4);color:var(--text-mid);font-family:'Cinzel',serif;font-size:.65rem;letter-spacing:.06em;cursor:pointer;border-radius:3px;transition:all .15s}
+.fog-action-btn:hover{background:rgba(201,168,76,.1);color:var(--gold);border-color:var(--gold)}
+.fog-rect-preview{position:absolute;border:2px dashed var(--gold);background:rgba(201,168,76,.12);pointer-events:none;z-index:55;border-radius:2px;box-shadow:0 0 16px rgba(201,168,76,.35),inset 0 0 8px rgba(201,168,76,.15);display:none}
+
+/* ════════════════════════════════════════════════════════════════════════
+   MONSTER MAKER
+   ════════════════════════════════════════════════════════════════════════ */
+.monster-modal{max-width:480px}
+.monster-modal h2{color:#ff8a8a !important}
+.monster-stat-grid{display:grid;grid-template-columns:1fr 1fr 1.4fr;gap:8px}
+.monster-stat-grid .form-row{margin:0}
+.monster-textarea{font-family:'Crimson Text',serif;font-size:.85rem;line-height:1.4;resize:vertical;min-height:60px}
+.monster-row-emoji{font-size:1.1rem}
+.monster-row-meta{font-size:.68rem;color:#e88a8a;font-style:italic}
+
+/* ════════════════════════════════════════════════════════════════════════
+   INITIATIVE TRACKER
+   ════════════════════════════════════════════════════════════════════════ */
+.init-bar{position:absolute;top:14px;left:50%;transform:translateX(-50%);background:linear-gradient(180deg,rgba(0,0,0,.95) 0%,rgba(20,16,30,.92) 100%);border:1px solid var(--gold);border-radius:6px;box-shadow:0 0 30px rgba(0,0,0,.6),0 0 0 1px rgba(201,168,76,.3);max-width:calc(100% - 100px);z-index:90;backdrop-filter:blur(6px)}
+.init-bar-inner{padding:10px 14px;display:flex;flex-direction:column;gap:8px;min-width:280px}
+.init-bar-header{display:flex;align-items:center;justify-content:space-between;gap:14px;font-family:'Cinzel',serif;color:var(--gold);font-size:.78rem;letter-spacing:.15em;text-transform:uppercase}
+.init-bar-round{font-family:'Cinzel Decorative',serif;color:var(--gold-light);font-size:.85rem;letter-spacing:.08em}
+.init-bar-row{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.init-pill{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;background:rgba(0,0,0,.5);border:1px solid var(--border-gold);border-radius:18px;font-family:'Cinzel',serif;font-size:.72rem;color:var(--text-mid);letter-spacing:.04em;transition:all .2s;white-space:nowrap}
+.init-pill .roll-num{display:inline-block;min-width:22px;padding:1px 6px;background:rgba(201,168,76,.15);border:1px solid var(--gold-dim);color:var(--gold-light);border-radius:10px;font-weight:700;font-size:.7rem;text-align:center}
+.init-pill.current{background:linear-gradient(135deg,rgba(201,168,76,.3),rgba(201,168,76,.1));border-color:var(--gold);color:var(--gold-light);box-shadow:0 0 16px rgba(201,168,76,.4);transform:scale(1.06)}
+.init-pill.current .roll-num{background:var(--gold);color:#1a1410;border-color:var(--gold-light)}
+.init-pill.ended{opacity:.45;text-decoration:line-through}
+.init-pill.is-you{border-color:var(--green-bright);box-shadow:0 0 8px rgba(82,183,136,.3)}
+.init-bar-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;padding-top:4px;border-top:1px solid rgba(201,168,76,.18)}
+.init-btn{padding:7px 16px;background:transparent;border:1px solid var(--gold);color:var(--gold);font-family:'Cinzel',serif;font-size:.7rem;letter-spacing:.12em;cursor:pointer;border-radius:4px;text-transform:uppercase;transition:all .2s}
+.init-btn:hover{background:rgba(201,168,76,.18);box-shadow:0 0 12px rgba(201,168,76,.3)}
+.init-btn.primary{background:linear-gradient(135deg,rgba(82,183,136,.3),rgba(82,183,136,.1));border-color:var(--green-bright);color:var(--green-bright)}
+.init-btn.primary:hover{background:rgba(82,183,136,.4);box-shadow:0 0 14px rgba(82,183,136,.4)}
+.init-btn.danger{border-color:var(--crimson-bright);color:#ff8a8a}
+.init-btn.danger:hover{background:rgba(192,57,43,.18)}
+.init-btn:disabled{opacity:.4;cursor:not-allowed;border-color:var(--text-dim);color:var(--text-dim)}
+.init-empty{font-style:italic;color:var(--text-dim);font-size:.7rem;text-align:center;padding:8px}
+.init-roll-input{width:50px;padding:4px 6px;background:var(--bg-dark);border:1px solid var(--border-gold);color:var(--text-bright);border-radius:3px;font-family:'Cinzel',serif;font-size:.75rem;text-align:center}
+.init-add-row{display:flex;gap:5px;align-items:center;font-size:.7rem;color:var(--text-mid);padding-top:4px;border-top:1px dashed rgba(201,168,76,.15)}
+.init-add-row input[type="text"]{flex:1;padding:4px 8px;background:var(--bg-dark);border:1px solid var(--border-gold);color:var(--text-bright);border-radius:3px;font-family:'Cinzel',serif;font-size:.72rem}
+@media (max-width:700px){.init-bar{max-width:calc(100% - 20px);left:10px;transform:none}}
+
+/* ════════════════════════════════════════════════════════════════════════
    ━━━━ FORGE STYLES (from character-builder) ━━━━
    ════════════════════════════════════════════════════════════════════════ */
 /* HEADER */
@@ -1190,6 +1252,14 @@ header::after{content:'';position:absolute;bottom:-1px;left:50%;transform:transl
         <div class="sb-section-title">⚒ Summon from Forge</div>
         <div class="sb-help">Drop a character you built in the Forge onto the active map.</div>
         <div id="forge-char-list" class="forge-char-list"></div>
+
+        <div class="dm-only">
+          <div class="sb-section-title">👹 Custom Monsters <span class="dm-badge">DM</span></div>
+          <div class="sb-help">Build your own monsters with whatever stats you want.</div>
+          <div id="monster-list" class="forge-char-list"></div>
+          <button class="vtt-btn" style="width:100%;margin-top:6px;background:rgba(139,26,26,.18);color:#e88a8a;border-color:rgba(192,57,43,.45)" onclick="openMonsterMaker()">+ Create Monster</button>
+        </div>
+
         <div class="sb-section-title">+ Add Token</div>
         <div class="token-form">
           <div class="form-row">
@@ -1239,6 +1309,43 @@ header::after{content:'';position:absolute;bottom:-1px;left:50%;transform:transl
         <div class="sb-section-title">+ Upload New Map</div>
         <input class="form-input" id="map-upload" type="file" accept="image/*" onchange="uploadMap(event)" style="font-size:.78rem">
         <div style="font-size:.7rem;color:var(--text-dim);font-style:italic;margin-top:4px">Saved to your browser only. Drag images here or click to browse.</div>
+
+        <!-- ── FOG OF WAR (DM only) ─────────────────────────── -->
+        <div class="dm-only" id="fog-section">
+          <div class="sb-section-title">🌫 Fog of War <span class="dm-badge">DM</span></div>
+          <div class="sb-help">Black out parts of the map. Players can't see hidden areas or any tokens behind them.</div>
+          <div class="fog-tool-row">
+            <button class="fog-tool-btn active" id="fog-tool-paint" onclick="setFogTool('paint')" title="Hide areas">🖌 Paint</button>
+            <button class="fog-tool-btn" id="fog-tool-erase" onclick="setFogTool('erase')" title="Reveal areas with brush">🧽 Erase</button>
+            <button class="fog-tool-btn" id="fog-tool-reveal-rect" onclick="setFogTool('reveal-rect')" title="Drag a box to reveal everything inside — good for bird's-eye-view reveals">🔲 Box</button>
+          </div>
+          <div class="form-row" style="margin-top:8px">
+            <label>Brush Size</label>
+            <input class="form-input" id="fog-brush-size" type="range" min="20" max="600" value="100" oninput="document.getElementById('fog-brush-val').textContent=this.value+'px'">
+            <span id="fog-brush-val" style="font-size:.7rem;color:var(--text-dim)">100px</span>
+            <div style="font-size:.65rem;color:var(--text-dim);font-style:italic;margin-top:3px">Single-click = reveal/hide a circle of this size. Drag = paint a stroke.</div>
+          </div>
+          <div class="fog-action-row">
+            <button class="fog-action-btn" onclick="fogFillAll()">🔲 Hide All</button>
+            <button class="fog-action-btn" onclick="fogClearAll()">⬜ Reveal All</button>
+          </div>
+
+          <!-- Bird's-eye / scout reveal: pick a token, set radius, one click clears fog around it -->
+          <div class="fog-vision-block">
+            <div class="sb-section-title" style="margin-top:14px">👁 Reveal Around Token</div>
+            <div class="sb-help">For bird's-eye view, scrying, scouting — instantly clear fog around any token's position.</div>
+            <div class="form-row" style="display:flex;gap:8px;align-items:center">
+              <label style="white-space:nowrap;margin:0">Vision Radius</label>
+              <input class="form-input" id="fog-vision-radius" type="number" min="1" max="50" value="6" style="width:60px">
+              <span style="font-size:.7rem;color:var(--text-dim)">squares</span>
+            </div>
+            <button class="fog-action-btn" style="width:100%;margin-top:6px;background:rgba(122,184,255,.12);border-color:rgba(122,184,255,.4);color:#7ab8ff" onclick="revealFogAroundToken()">👁 Reveal Around Selected Token</button>
+            <div style="font-size:.65rem;color:var(--text-dim);font-style:italic;margin-top:4px">Click a token first (on the map or in the Tokens list) to select it.</div>
+          </div>
+
+          <label class="checkbox-row" style="margin-top:10px"><input type="checkbox" id="fog-visible-toggle" checked onchange="toggleFogVisibility()"> Show fog overlay</label>
+          <div style="font-size:.7rem;color:var(--text-dim);font-style:italic;margin-top:6px">You see fog at 50% — players see it solid black.</div>
+        </div>
       </div>
 
       <!-- GRID TAB -->
@@ -1271,12 +1378,10 @@ header::after{content:'';position:absolute;bottom:-1px;left:50%;transform:transl
 
   <div class="vtt-canvas-wrap" id="canvas-wrap">
     <div class="vtt-toolbar">
-      <button class="tool-btn active" id="tool-pan" onclick="setTool('pan')" title="Pan / Move (V)">✋</button>
-      <button class="tool-btn" id="tool-select" onclick="setTool('select')" title="Select Token (S)">⊕</button>
-      <button class="tool-btn" id="tool-measure" onclick="setTool('measure')" title="Measure (M)">📏</button>
+      <button class="tool-btn" id="tool-measure" onclick="setTool('measure')" title="Measure (M) — click again to exit">📏</button>
+      <button class="tool-btn dm-only-inline" id="tool-fog" onclick="setTool('fog')" title="Fog of War (F) — DM only, click again to exit">🌫</button>
       <div class="tool-divider"></div>
-      <button class="tool-btn" onclick="centerMap()" title="Center Map (C)">⊙</button>
-      <button class="tool-btn" onclick="resetZoom()" title="Reset Zoom (R)">⛶</button>
+      <button class="tool-btn dm-only-inline" onclick="startInitiative()" title="Start Initiative — DM only" style="width:auto;padding:0 10px;font-family:'Cinzel',serif;font-size:.62rem;letter-spacing:.1em">⚔ INIT</button>
     </div>
     <div class="zoom-controls">
       <button class="zoom-btn" onclick="zoomBy(1.2)">＋</button>
@@ -1286,6 +1391,12 @@ header::after{content:'';position:absolute;bottom:-1px;left:50%;transform:transl
     <div class="map-container" id="map-container">
       <img class="map-image" id="map-img" alt="map">
       <canvas class="map-grid" id="map-grid"></canvas>
+      <canvas class="map-fog" id="map-fog"></canvas>
+    </div>
+
+    <!-- ── INITIATIVE TRACKER (overlay above canvas) ────────────── -->
+    <div id="init-bar" class="init-bar" style="display:none">
+      <div class="init-bar-inner" id="init-bar-inner"></div>
     </div>
   </div>
 </div>
@@ -1310,6 +1421,38 @@ header::after{content:'';position:absolute;bottom:-1px;left:50%;transform:transl
       <span class="help-key">Del</span><span class="help-desc">Delete selected token</span>
     </div>
     <button class="help-close" onclick="hideHelp()">Got It</button>
+  </div>
+</div>
+
+<!-- ═════════════════════════════════════════════════════════════════════
+     MONSTER MAKER MODAL — DM creates custom monsters with free-form fields
+     ═════════════════════════════════════════════════════════════════════ -->
+<div class="summon-modal-bg" id="monster-modal" style="display:none">
+  <div class="summon-modal monster-modal">
+    <div class="summon-close" onclick="closeMonsterMaker()">×</div>
+    <h2 id="monster-modal-title">👹 Create Monster</h2>
+    <div class="summon-sub">Make your own monster — fill in whatever stats you want.</div>
+
+    <div class="summon-img-wrap" style="padding-top:6px;padding-bottom:14px">
+      <div class="summon-img-preview" id="monster-img-preview" onclick="document.getElementById('monster-img-input').click()" style="width:110px;height:110px;border-color:var(--crimson-bright)">
+        <span class="summon-placeholder">📷<br>Token image<br>(optional)</span>
+      </div>
+    </div>
+    <input type="file" id="monster-img-input" accept="image/*" style="display:none">
+
+    <div class="form-row"><label>Name *</label><input class="form-input" id="monster-name" placeholder="e.g. Goblin Sneak"></div>
+    <div class="monster-stat-grid">
+      <div class="form-row"><label>HP</label><input class="form-input" id="monster-hp" type="number" placeholder="e.g. 12" min="1"></div>
+      <div class="form-row"><label>AC</label><input class="form-input" id="monster-ac" type="number" placeholder="e.g. 13" min="0"></div>
+      <div class="form-row"><label>Speed</label><input class="form-input" id="monster-speed" placeholder="e.g. 30 ft"></div>
+    </div>
+    <div class="form-row"><label>Attacks / Abilities</label><textarea class="form-input monster-textarea" id="monster-attacks" placeholder="Whatever you want — e.g.&#10;Bite: +4 to hit, 1d6+2 piercing&#10;Sneak Attack (1/turn): +2d6 damage" rows="3"></textarea></div>
+    <div class="form-row"><label>Notes / Description</label><textarea class="form-input monster-textarea" id="monster-notes" placeholder="Lore, behavior, weaknesses, anything you want to remember during play..." rows="3"></textarea></div>
+
+    <div class="summon-actions" style="margin-top:14px">
+      <button class="summon-btn-secondary" onclick="closeMonsterMaker()">Cancel</button>
+      <button class="summon-btn-primary" id="monster-save-btn" onclick="saveMonster()" style="border-color:var(--crimson-bright);color:#ff8a8a;background:linear-gradient(135deg,rgba(192,57,43,.3),rgba(192,57,43,.1))">💾 Save Monster</button>
+    </div>
   </div>
 </div>
 
@@ -5270,7 +5413,18 @@ let state = {
   selectedTokenId: null,
   tool: 'pan',
   selectedColor: 'blue',
-  advantageMode: 'normal'  // 'normal', 'adv', 'dis'
+  advantageMode: 'normal',  // 'normal', 'adv', 'dis'
+  // ── DM features ─────────────────────────────────────────
+  fog: {},                  // { [mapId]: dataUrl } — black-out painted by DM
+  fogTool: 'paint',         // 'paint' | 'erase' for fog brush
+  fogVisible: true,         // DM toggle to hide fog overlay temporarily
+  initiative: {             // shared turn tracker — synced over multiplayer
+    active: false,          // true between Start and End Combat
+    phase: 'idle',          // 'idle' | 'rolling' | 'running'
+    entries: [],            // [{ id, name, roll, mod, ended, isNpc }]
+    turnIndex: 0,
+    round: 1
+  }
 };
 
 // MAP_DATA_URL placeholder — will be filled in later
@@ -5966,12 +6120,17 @@ function endMeasure(){
 // TOOLS
 // ════════════════════════════════════════════════════
 function setTool(t){
+  // If you click the currently-active tool again, toggle back to pan
+  // (since the pan/select buttons were removed, this is how you "escape"
+  // out of measure or fog mode without a dedicated pan button).
+  if(state.tool === t && (t === 'measure' || t === 'fog')) t = 'pan';
   state.tool = t;
   document.querySelectorAll('.tool-btn').forEach(b=>b.classList.remove('active'));
   const btn = document.getElementById('tool-'+t);
   if(btn) btn.classList.add('active');
-  wrap.classList.remove('tool-token','tool-measure');
+  wrap.classList.remove('tool-token','tool-measure','tool-fog');
   if(t==='measure') wrap.classList.add('tool-measure');
+  if(t==='fog') wrap.classList.add('tool-fog');
 }
 
 // ════════════════════════════════════════════════════
@@ -6458,6 +6617,663 @@ function syncForgeCharacterToTokens(charId){
     if(typeof renderTokenList === 'function') renderTokenList();
   }
 }
+
+/* ════════════════════════════════════════════════════════════════════════
+   ╔═══════════════════════════════════════════════════════════════════╗
+   ║  DM FEATURE BLOCK                                                  ║
+   ║  ─ Initiative tracker (state machine, multiplayer-synced)          ║
+   ║  ─ Custom monster maker (free-form fields, localStorage)           ║
+   ║  ─ Fog of war (canvas overlay, painted by DM, hides for players)   ║
+   ╚═══════════════════════════════════════════════════════════════════╝
+   ════════════════════════════════════════════════════════════════════════ */
+
+function isDM(){ return !mp.myRole || mp.myRole === 'dm'; }
+function applyRoleClass(){
+  const b = document.body;
+  b.classList.remove('role-dm','role-player');
+  b.classList.add(isDM() ? 'role-dm' : 'role-player');
+}
+function escapeHtml(s){
+  return String(s==null?'':s).replace(/[<>&"']/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+/* ──────────────────────────────────────────────────────────────────────
+   INITIATIVE TRACKER — shared turn order, syncs over multiplayer.
+   Phases: idle → rolling → running → idle (when DM ends combat).
+   ────────────────────────────────────────────────────────────────────── */
+function startInitiative(){
+  if(!isDM()){ showToast('Only the DM can start initiative'); return; }
+  state.initiative = { active:true, phase:'rolling', entries:[], turnIndex:0, round:1 };
+  saveState();
+  renderInitiative();
+}
+
+function rollInitiative(modStr){
+  const init = state.initiative;
+  if(!init || !init.active || init.phase !== 'rolling') return;
+  const mod = parseInt(modStr) || 0;
+  const myName = mp.myName || (isDM() ? 'DM' : 'You');
+  // Replace existing entry for same name (re-roll), else add
+  const existingIdx = init.entries.findIndex(e => e.name === myName && !e.isNpc);
+  const d20 = Math.floor(Math.random()*20)+1;
+  const total = d20 + mod;
+  const entry = {
+    id: existingIdx >= 0 ? init.entries[existingIdx].id : ('p_'+(mp.myId||'local')+'_'+Date.now()),
+    name: myName, roll: total, d20, mod, ended:false, isNpc:false
+  };
+  if(existingIdx >= 0) init.entries[existingIdx] = entry;
+  else init.entries.push(entry);
+  // Also drop into the dice log so it's recorded
+  if(typeof logRoll === 'function') logRoll(`Init (1d20${mod>=0?'+':''}${mod})`, total, `[${d20}]+${mod}`, 'normal');
+  saveState();
+  renderInitiative();
+}
+
+function addNpcInitiative(name, roll){
+  if(!isDM()) return;
+  name = (name||'').trim();
+  if(!name){ showToast('Enter NPC name'); return; }
+  const r = parseInt(roll);
+  if(isNaN(r)){ showToast('Enter a roll value'); return; }
+  state.initiative.entries.push({
+    id: 'npc_'+Date.now()+'_'+Math.floor(Math.random()*1000),
+    name, roll: r, d20: r, mod: 0, ended: false, isNpc: true
+  });
+  saveState();
+  renderInitiative();
+}
+
+function removeInitiativeEntry(id){
+  if(!isDM()) return;
+  state.initiative.entries = state.initiative.entries.filter(e => e.id !== id);
+  // Adjust turnIndex if needed
+  if(state.initiative.turnIndex >= state.initiative.entries.length){
+    state.initiative.turnIndex = 0;
+  }
+  saveState();
+  renderInitiative();
+}
+
+function beginCombat(){
+  if(!isDM()) return;
+  if(state.initiative.entries.length === 0){ showToast('Add at least one entry first'); return; }
+  state.initiative.entries.sort((a,b) => b.roll - a.roll);
+  state.initiative.phase = 'running';
+  state.initiative.turnIndex = 0;
+  state.initiative.round = 1;
+  state.initiative.entries.forEach(e => e.ended = false);
+  saveState();
+  renderInitiative();
+}
+
+function endTurn(){
+  const init = state.initiative;
+  if(!init || !init.active || init.phase !== 'running') return;
+  const cur = init.entries[init.turnIndex];
+  if(!cur) return;
+  // Permission: it's your turn or you're the DM
+  const isMyTurn = (cur.name === mp.myName && !cur.isNpc);
+  if(!isDM() && !isMyTurn) return;
+  cur.ended = true;
+  init.turnIndex++;
+  if(init.turnIndex >= init.entries.length){
+    init.turnIndex = 0;
+    init.round++;
+    init.entries.forEach(e => e.ended = false);
+  }
+  saveState();
+  renderInitiative();
+}
+
+function endCombat(){
+  if(!isDM()) return;
+  state.initiative = { active:false, phase:'idle', entries:[], turnIndex:0, round:1 };
+  saveState();
+  renderInitiative();
+}
+
+function renderInitiative(){
+  const bar = document.getElementById('init-bar');
+  const inner = document.getElementById('init-bar-inner');
+  if(!bar || !inner) return;
+  const init = state.initiative || {};
+  if(!init.active){ bar.style.display = 'none'; return; }
+  bar.style.display = 'block';
+
+  const dm = isDM();
+  const myName = mp.myName;
+  const haveRolled = init.entries.some(e => e.name === myName && !e.isNpc);
+
+  let html = '';
+  if(init.phase === 'rolling'){
+    html += `<div class="init-bar-header"><span>⚔ Roll Initiative!</span><span class="init-bar-round">Setup</span></div>`;
+    if(init.entries.length === 0){
+      html += `<div class="init-empty">Waiting for rolls...</div>`;
+    } else {
+      html += `<div class="init-bar-row">`;
+      init.entries.forEach(e => {
+        const me = (e.name === myName && !e.isNpc);
+        const removeBtn = dm ? `<span style="cursor:pointer;color:var(--text-dim);margin-left:2px" onclick="removeInitiativeEntry('${e.id}')" title="Remove">×</span>` : '';
+        html += `<span class="init-pill ${me?'is-you':''}">${e.isNpc?'👹 ':''}${escapeHtml(e.name)}<span class="roll-num">${e.roll}</span>${removeBtn}</span>`;
+      });
+      html += `</div>`;
+    }
+    html += `<div class="init-bar-actions">`;
+    if(!haveRolled){
+      html += `<input type="number" class="init-roll-input" id="init-mod-input" placeholder="+0" title="Initiative modifier">`;
+      html += `<button class="init-btn primary" onclick="rollInitiative(document.getElementById('init-mod-input').value)">🎲 Roll</button>`;
+    } else {
+      html += `<span style="font-size:.7rem;color:var(--green-bright);align-self:center">✓ Rolled (${init.entries.find(e=>e.name===myName&&!e.isNpc).roll})</span>`;
+    }
+    if(dm){
+      html += `<button class="init-btn primary" onclick="beginCombat()" ${init.entries.length===0?'disabled':''}>▶ Begin Combat</button>`;
+      html += `<button class="init-btn danger" onclick="endCombat()">✕ Cancel</button>`;
+    }
+    html += `</div>`;
+    if(dm){
+      html += `<div class="init-add-row">
+        <input type="text" id="init-npc-name" placeholder="NPC / monster name">
+        <input type="number" id="init-npc-roll" placeholder="Roll" style="width:60px">
+        <button class="init-btn" onclick="addNpcInitiative(document.getElementById('init-npc-name').value, document.getElementById('init-npc-roll').value); document.getElementById('init-npc-name').value=''; document.getElementById('init-npc-roll').value=''">+ NPC</button>
+      </div>`;
+    }
+  } else if(init.phase === 'running'){
+    const cur = init.entries[init.turnIndex];
+    const isMyTurn = !!(cur && cur.name === myName && !cur.isNpc);
+    html += `<div class="init-bar-header"><span>⚔ ${cur ? escapeHtml(cur.name) + "'s turn" : 'Combat'}</span><span class="init-bar-round">Round ${init.round}</span></div>`;
+    html += `<div class="init-bar-row">`;
+    init.entries.forEach((e, i) => {
+      const me = (e.name === myName && !e.isNpc);
+      const klasses = [];
+      if(i === init.turnIndex) klasses.push('current');
+      if(e.ended) klasses.push('ended');
+      if(me) klasses.push('is-you');
+      html += `<span class="init-pill ${klasses.join(' ')}">${e.isNpc?'👹 ':''}${escapeHtml(e.name)}<span class="roll-num">${e.roll}</span></span>`;
+    });
+    html += `</div>`;
+    html += `<div class="init-bar-actions">`;
+    const canEnd = isMyTurn || dm;
+    html += `<button class="init-btn primary" ${canEnd?'':'disabled'} onclick="endTurn()" title="${canEnd?'':'Wait for your turn'}">${isMyTurn?'✓ End My Turn':(dm?'➜ Next':'⏳ '+(cur?escapeHtml(cur.name):'')+"'s turn")}</button>`;
+    if(dm) html += `<button class="init-btn danger" onclick="endCombat()">⏹ End Combat</button>`;
+    html += `</div>`;
+  }
+  inner.innerHTML = html;
+}
+
+/* ──────────────────────────────────────────────────────────────────────
+   CUSTOM MONSTER MAKER — free-form, stored in aetherfall_monsters
+   ────────────────────────────────────────────────────────────────────── */
+const MONSTER_KEY = 'aetherfall_monsters';
+let _monsterEditId = null;
+let _monsterImg = null;
+
+function getMonsters(){ try{ return JSON.parse(localStorage.getItem(MONSTER_KEY)||'{}'); }catch(e){ return {}; } }
+function setMonsters(m){ localStorage.setItem(MONSTER_KEY, JSON.stringify(m)); }
+
+function openMonsterMaker(id){
+  if(!isDM()){ showToast('DM only'); return; }
+  _monsterEditId = id || null;
+  _monsterImg = null;
+  const titleEl = document.getElementById('monster-modal-title');
+  if(titleEl) titleEl.textContent = id ? '✎ Edit Monster' : '👹 Create Monster';
+  // Reset form
+  ['monster-name','monster-hp','monster-ac','monster-speed','monster-attacks','monster-notes','monster-img-input'].forEach(k=>{
+    const el = document.getElementById(k); if(el) el.value = '';
+  });
+  const preview = document.getElementById('monster-img-preview');
+  if(preview){
+    preview.style.backgroundImage = '';
+    preview.innerHTML = '<span class="summon-placeholder">📷<br>Token image<br>(optional)</span>';
+  }
+  if(id){
+    const m = getMonsters()[id];
+    if(m){
+      document.getElementById('monster-name').value = m.name || '';
+      document.getElementById('monster-hp').value = m.hp || '';
+      document.getElementById('monster-ac').value = m.ac || '';
+      document.getElementById('monster-speed').value = m.speed || '';
+      document.getElementById('monster-attacks').value = m.attacks || '';
+      document.getElementById('monster-notes').value = m.notes || '';
+      _monsterImg = m.image || null;
+      if(_monsterImg && preview){
+        preview.style.backgroundImage = `url('${_monsterImg}')`;
+        preview.innerHTML = '';
+      }
+    }
+  }
+  document.getElementById('monster-modal').style.display = 'flex';
+}
+
+function closeMonsterMaker(){
+  const modal = document.getElementById('monster-modal');
+  if(modal) modal.style.display = 'none';
+  _monsterEditId = null;
+  _monsterImg = null;
+}
+
+function saveMonster(){
+  const name = (document.getElementById('monster-name').value||'').trim();
+  if(!name){ showToast('Name is required'); return; }
+  const monsters = getMonsters();
+  const id = _monsterEditId || ('mon_'+Date.now());
+  monsters[id] = {
+    id, name,
+    hp: parseInt(document.getElementById('monster-hp').value) || 0,
+    ac: parseInt(document.getElementById('monster-ac').value) || 0,
+    speed: (document.getElementById('monster-speed').value||'').trim(),
+    attacks: (document.getElementById('monster-attacks').value||'').trim(),
+    notes: (document.getElementById('monster-notes').value||'').trim(),
+    image: _monsterImg,
+    savedAt: Date.now()
+  };
+  setMonsters(monsters);
+  renderMonsterList();
+  closeMonsterMaker();
+  showToast('💾 Monster saved: '+name);
+}
+
+function deleteMonster(id, evt){
+  if(evt) evt.stopPropagation();
+  if(!isDM()) return;
+  const m = getMonsters();
+  if(!m[id]) return;
+  if(!confirm('Delete monster: '+m[id].name+'?')) return;
+  delete m[id];
+  setMonsters(m);
+  renderMonsterList();
+}
+
+function renderMonsterList(){
+  const container = document.getElementById('monster-list');
+  if(!container) return;
+  const monsters = getMonsters();
+  const ids = Object.keys(monsters).sort((a,b)=> (monsters[b].savedAt||0)-(monsters[a].savedAt||0));
+  if(ids.length === 0){
+    container.innerHTML = '<div class="forge-empty-msg">No monsters yet — click "+ Create Monster" below.</div>';
+    return;
+  }
+  container.innerHTML = ids.map(id => {
+    const m = monsters[id];
+    const meta = [m.hp?`${m.hp} HP`:'', m.ac?`AC ${m.ac}`:'', m.speed||''].filter(Boolean).join(' · ');
+    return `<div class="forge-char-row" onclick="summonMonsterAsToken('${id}')">
+      <span class="fc-emoji monster-row-emoji">👹</span>
+      <div class="fc-info">
+        <div class="fc-name" style="color:#ff8a8a">${escapeHtml(m.name)}</div>
+        <div class="fc-meta monster-row-meta">${escapeHtml(meta) || 'Click to place on map'}</div>
+      </div>
+      <button class="fc-summon" style="background:rgba(192,57,43,.18);border-color:rgba(192,57,43,.5);color:#ff8a8a" onclick="event.stopPropagation();summonMonsterAsToken('${id}')">Place</button>
+      <button class="fc-summon" style="background:transparent;border-color:rgba(122,112,96,.4);color:var(--text-dim);padding:3px 7px" onclick="event.stopPropagation();openMonsterMaker('${id}')" title="Edit">✎</button>
+      <button class="fc-summon" style="background:transparent;border-color:rgba(122,112,96,.3);color:var(--text-dim);padding:3px 7px" onclick="deleteMonster('${id}',event)" title="Delete">✕</button>
+    </div>`;
+  }).join('');
+}
+
+function summonMonsterAsToken(id){
+  if(!state.activeMapId){ showToast('Load a map first'); return; }
+  const m = getMonsters()[id];
+  if(!m) return;
+  const wrap = document.getElementById('canvas-wrap');
+  const rect = wrap.getBoundingClientRect();
+  const wx = (rect.width/2 - state.view.x) / state.view.zoom;
+  const wy = (rect.height/2 - state.view.y) / state.view.zoom;
+  const tk = {
+    id: 'tk_'+Date.now()+'_'+Math.floor(Math.random()*1000),
+    mapId: state.activeMapId,
+    name: m.name.slice(0,24),
+    color: 'red',
+    image: m.image || null,
+    x: Math.round(wx-30),
+    y: Math.round(wy-30),
+    hp: m.hp || 10,
+    hpMax: m.hp || 10,
+    monsterId: id
+  };
+  state.tokens.push(tk);
+  saveState();
+  renderTokens();
+  renderTokenList();
+  showToast('👹 Summoned: '+tk.name);
+}
+
+/* ──────────────────────────────────────────────────────────────────────
+   FOG OF WAR — canvas overlay; DM paints, players see opaque black
+   ────────────────────────────────────────────────────────────────────── */
+let _fogPainting = false;
+let _fogLastPos = null;
+
+function setFogTool(tool){
+  state.fogTool = tool;
+  ['paint','erase','reveal-rect'].forEach(t => {
+    const btn = document.getElementById('fog-tool-' + t);
+    if(btn) btn.classList.toggle('active', tool === t);
+  });
+}
+
+function toggleFogVisibility(){
+  const cb = document.getElementById('fog-visible-toggle');
+  state.fogVisible = cb ? cb.checked : true;
+  renderFog();
+}
+
+function ensureFogCanvas(){
+  const map = state.maps.find(m=>m.id===state.activeMapId);
+  if(!map) return null;
+  const canvas = document.getElementById('map-fog');
+  if(!canvas) return null;
+  const w = map.naturalWidth || 1000;
+  const h = map.naturalHeight || 700;
+  if(canvas.width !== w || canvas.height !== h){
+    canvas.width = w;
+    canvas.height = h;
+  }
+  return canvas;
+}
+
+function renderFog(){
+  const canvas = document.getElementById('map-fog');
+  if(!canvas) return;
+  if(!state.activeMapId){ canvas.style.display = 'none'; return; }
+  const fogCanvas = ensureFogCanvas();
+  if(!fogCanvas) return;
+  const ctx = fogCanvas.getContext && fogCanvas.getContext('2d');
+  if(!ctx) return;  // browsers without canvas support (e.g., jsdom)
+  ctx.clearRect(0, 0, fogCanvas.width, fogCanvas.height);
+  const dm = isDM();
+  if(dm && state.fogVisible === false){
+    canvas.style.display = 'none';
+    return;
+  }
+  canvas.style.display = 'block';
+  canvas.classList.toggle('dm-view', dm);
+  const dataUrl = state.fog && state.fog[state.activeMapId];
+  if(dataUrl){
+    const img = new Image();
+    img.onload = () => {
+      try { ctx.drawImage(img, 0, 0, fogCanvas.width, fogCanvas.height); } catch(e){}
+    };
+    img.src = dataUrl;
+  }
+}
+
+function paintFogStroke(canvas, ctx, x, y, lastX, lastY){
+  if(!ctx) return;
+  const isErase = state.fogTool === 'erase';
+  const brushEl = document.getElementById('fog-brush-size');
+  const brushSize = brushEl ? parseInt(brushEl.value) : 80;
+  ctx.globalCompositeOperation = isErase ? 'destination-out' : 'source-over';
+  ctx.fillStyle = '#000';
+  ctx.lineWidth = brushSize;
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  ctx.strokeStyle = '#000';
+  if(lastX != null && lastY != null){
+    ctx.beginPath();
+    ctx.moveTo(lastX, lastY);
+    ctx.lineTo(x, y);
+    ctx.stroke();
+  } else {
+    ctx.beginPath();
+    ctx.arc(x, y, brushSize/2, 0, Math.PI*2);
+    ctx.fill();
+  }
+  ctx.globalCompositeOperation = 'source-over';
+}
+
+function fogFillAll(){
+  if(!isDM()) return;
+  const c = ensureFogCanvas();
+  if(!c) return;
+  const ctx = c.getContext && c.getContext('2d');
+  if(!ctx) return;
+  ctx.fillStyle = '#000';
+  ctx.fillRect(0, 0, c.width, c.height);
+  saveFogToState();
+}
+
+function fogClearAll(){
+  if(!isDM()) return;
+  const c = ensureFogCanvas();
+  if(!c) return;
+  const ctx = c.getContext && c.getContext('2d');
+  if(!ctx) return;
+  ctx.clearRect(0, 0, c.width, c.height);
+  saveFogToState();
+}
+
+/* Bird's-eye / scout reveal — clears a circle of fog around the selected
+   token's position. Radius is taken from the #fog-vision-radius input,
+   measured in grid squares. Useful for: a flying character looking down,
+   a clairvoyance spell, a scout exploring ahead. */
+function revealFogAroundToken(){
+  if(!isDM()){ showToast('DM only'); return; }
+  const tk = state.tokens.find(t => t.id === state.selectedTokenId);
+  if(!tk){ showToast('⚠ Select a token first (click one on the map)'); return; }
+  if(tk.mapId !== state.activeMapId){ showToast('⚠ That token is on a different map'); return; }
+  const radiusEl = document.getElementById('fog-vision-radius');
+  const squares = Math.max(1, parseInt(radiusEl?.value) || 6);
+  const radiusPx = squares * (state.grid.size || 70);
+  const c = ensureFogCanvas();
+  if(!c) return;
+  const ctx = c.getContext && c.getContext('2d');
+  if(!ctx) return;
+  // Token center (tokens are 60×60, so center is +30,+30)
+  const cx = tk.x + 30;
+  const cy = tk.y + 30;
+  ctx.globalCompositeOperation = 'destination-out';
+  ctx.beginPath();
+  ctx.arc(cx, cy, radiusPx, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.globalCompositeOperation = 'source-over';
+  saveFogToState();
+  const feet = squares * (state.grid.feetPerSquare || 5);
+  showToast(`👁 Revealed ${squares} sq (${feet} ft) around ${tk.name}`);
+}
+
+function saveFogToState(){
+  const canvas = document.getElementById('map-fog');
+  if(!canvas || !state.activeMapId) return;
+  state.fog = state.fog || {};
+  try{
+    if(typeof canvas.toDataURL === 'function'){
+      state.fog[state.activeMapId] = canvas.toDataURL('image/png');
+    }
+  } catch(e){ console.warn('Fog save failed', e); return; }
+  saveState();
+}
+
+/* Mouse paint handlers — wired once on init.
+   Two modes: brush (paint/erase) and rectangle (reveal-rect). */
+let _fogRectStart = null;
+
+function setupFogPainting(){
+  const wrap = document.getElementById('canvas-wrap');
+  if(!wrap || wrap._fogWired) return;
+  wrap._fogWired = true;
+
+  function getCanvasCoords(e){
+    const rect = wrap.getBoundingClientRect();
+    const wx = (e.clientX - rect.left - state.view.x) / state.view.zoom;
+    const wy = (e.clientY - rect.top - state.view.y) / state.view.zoom;
+    return { x: wx, y: wy };
+  }
+
+  function showRectPreview(x, y, w, h){
+    let p = document.getElementById('fog-rect-preview');
+    if(!p){
+      p = document.createElement('div');
+      p.id = 'fog-rect-preview';
+      p.className = 'fog-rect-preview';
+      const container = document.getElementById('map-container');
+      if(container) container.appendChild(p);
+    }
+    p.style.left = x + 'px';
+    p.style.top = y + 'px';
+    p.style.width = w + 'px';
+    p.style.height = h + 'px';
+    p.style.display = 'block';
+  }
+  function hideRectPreview(){
+    const p = document.getElementById('fog-rect-preview');
+    if(p) p.style.display = 'none';
+  }
+
+  wrap.addEventListener('mousedown', e => {
+    if(state.tool !== 'fog' || !isDM() || e.button !== 0) return;
+    const c = ensureFogCanvas();
+    if(!c) return;
+    const ctx = c.getContext && c.getContext('2d');
+    if(!ctx) return;
+    const pos = getCanvasCoords(e);
+    _fogPainting = true;
+    document.body.classList.add('fog-painting');
+    if(state.fogTool === 'reveal-rect'){
+      _fogRectStart = pos;
+      showRectPreview(pos.x, pos.y, 0, 0);
+    } else {
+      _fogLastPos = null;
+      paintFogStroke(c, ctx, pos.x, pos.y, null, null);
+      _fogLastPos = pos;
+    }
+    e.preventDefault();
+    e.stopPropagation();
+  }, true);
+
+  wrap.addEventListener('mousemove', e => {
+    if(!_fogPainting) return;
+    const c = ensureFogCanvas();
+    if(!c) return;
+    const ctx = c.getContext && c.getContext('2d');
+    if(!ctx) return;
+    const pos = getCanvasCoords(e);
+    if(state.fogTool === 'reveal-rect' && _fogRectStart){
+      const x = Math.min(_fogRectStart.x, pos.x);
+      const y = Math.min(_fogRectStart.y, pos.y);
+      const w = Math.abs(pos.x - _fogRectStart.x);
+      const h = Math.abs(pos.y - _fogRectStart.y);
+      showRectPreview(x, y, w, h);
+    } else {
+      paintFogStroke(c, ctx, pos.x, pos.y, _fogLastPos?.x ?? null, _fogLastPos?.y ?? null);
+      _fogLastPos = pos;
+    }
+  });
+
+  function endPaint(e){
+    if(!_fogPainting) return;
+    // Box-reveal: commit the rectangle by clearing that area from the fog canvas
+    if(state.fogTool === 'reveal-rect' && _fogRectStart){
+      const c = ensureFogCanvas();
+      const ctx = c && c.getContext && c.getContext('2d');
+      if(ctx && e){
+        const endPos = getCanvasCoords(e);
+        const x = Math.min(_fogRectStart.x, endPos.x);
+        const y = Math.min(_fogRectStart.y, endPos.y);
+        const w = Math.abs(endPos.x - _fogRectStart.x);
+        const h = Math.abs(endPos.y - _fogRectStart.y);
+        // Only commit if user actually dragged a meaningful area (>4px each side)
+        if(w > 4 && h > 4) ctx.clearRect(x, y, w, h);
+      }
+      hideRectPreview();
+      _fogRectStart = null;
+    }
+    _fogPainting = false;
+    _fogLastPos = null;
+    document.body.classList.remove('fog-painting');
+    saveFogToState();
+  }
+  wrap.addEventListener('mouseup', endPaint);
+  wrap.addEventListener('mouseleave', endPaint);
+}
+
+/* ──────────────────────────────────────────────────────────────────────
+   HOOKS — wire features into existing VTT lifecycle
+   ────────────────────────────────────────────────────────────────────── */
+
+// Re-render fog whenever a map is loaded
+if(typeof loadMap === 'function'){
+  const _origLoadMap = window.loadMap;
+  window.loadMap = function(id){
+    const r = _origLoadMap.apply(this, arguments);
+    setTimeout(() => { try{ renderFog(); }catch(e){} }, 100);
+    return r;
+  };
+}
+
+// Re-render fog after map image loads (for natural dimensions)
+const _mapImg = document.getElementById('map-img');
+if(_mapImg){
+  _mapImg.addEventListener('load', () => { try{ renderFog(); }catch(e){} });
+}
+
+// Apply role class on init and after multiplayer state changes
+function _initDmFeatures(){
+  applyRoleClass();
+  setupFogPainting();
+  renderMonsterList();
+  renderInitiative();
+  renderFog();
+}
+// Run after VTT init has set up state
+setTimeout(_initDmFeatures, 200);
+
+// After joinRoom or skipMultiplayer, role may change — refresh visibility
+if(typeof joinRoom === 'function'){
+  const _origJoin = window.joinRoom;
+  window.joinRoom = async function(){
+    const r = await _origJoin.apply(this, arguments);
+    setTimeout(() => { applyRoleClass(); renderInitiative(); renderFog(); }, 100);
+    return r;
+  };
+}
+if(typeof skipMultiplayer === 'function'){
+  const _origSkip = window.skipMultiplayer;
+  window.skipMultiplayer = function(){
+    const r = _origSkip.apply(this, arguments);
+    applyRoleClass();
+    renderInitiative();
+    renderFog();
+    return r;
+  };
+}
+
+// Also wire when VTT is first initialized via setMode('tabletop')
+if(typeof setMode === 'function'){
+  const _origSetMode = window.setMode;
+  window.setMode = function(mode){
+    const r = _origSetMode.apply(this, arguments);
+    if(mode === 'tabletop'){
+      setTimeout(_initDmFeatures, 250);
+    }
+    return r;
+  };
+}
+
+// Monster image picker
+(function(){
+  function wireMonsterImgInput(){
+    const inp = document.getElementById('monster-img-input');
+    if(!inp || inp._wired) return;
+    inp._wired = true;
+    inp.addEventListener('change', e => {
+      const file = e.target.files[0];
+      if(!file) return;
+      const reader = new FileReader();
+      reader.onload = ev => {
+        _monsterImg = ev.target.result;
+        const preview = document.getElementById('monster-img-preview');
+        if(preview){
+          preview.style.backgroundImage = `url('${_monsterImg}')`;
+          preview.innerHTML = '';
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', wireMonsterImgInput);
+  } else {
+    wireMonsterImgInput();
+  }
+})();
 </script>
 
 <!-- ━━━━ MULTIPLAYER (SUPABASE) ━━━━ -->
@@ -6544,6 +7360,8 @@ async function pushFullState(){
     tokens: state.tokens,
     diceLog: state.diceLog.slice(0,30),
     grid: state.grid,
+    fog: state.fog,                  // black-out canvas dataURLs per map
+    initiative: state.initiative,    // turn tracker
     senderId: mp.myId,
     senderName: mp.myName
   };
@@ -6591,6 +7409,24 @@ function applyRemoteFullState(remote){
       .slice(0,60);
   }
 
+  // Fog of war: don't overwrite while we're actively painting (DM only).
+  if(remote.fog && !_fogPainting) state.fog = remote.fog;
+
+  // Initiative: merge by entry id so two players rolling at once both register.
+  if(remote.initiative){
+    if(state.initiative.phase === 'rolling' && remote.initiative.phase === 'rolling'){
+      // Merge entries: keep all unique by id
+      const seen = new Set(state.initiative.entries.map(e=>e.id));
+      const merged = [...state.initiative.entries];
+      for(const e of remote.initiative.entries){
+        if(!seen.has(e.id)){ merged.push(e); seen.add(e.id); }
+      }
+      state.initiative = { ...remote.initiative, entries: merged };
+    } else {
+      state.initiative = remote.initiative;
+    }
+  }
+
   const needsMapLoad = remote.activeMapId && remote.activeMapId !== state.activeMapId;
   if(remote.activeMapId !== undefined) state.activeMapId = remote.activeMapId;
 
@@ -6618,6 +7454,10 @@ function applyRemoteFullState(remote){
   renderDiceLog();
   applyTransform();
   renderMapList();
+
+  // Refresh fog overlay and initiative bar from new remote state.
+  try{ if(typeof renderFog === 'function') renderFog(); }catch(e){}
+  try{ if(typeof renderInitiative === 'function') renderInitiative(); }catch(e){}
 
   const ids = ['grid-show','grid-snap','grid-size','grid-feet'];
   const vals = [state.grid.show, state.grid.snap, state.grid.size, state.grid.feetPerSquare];
